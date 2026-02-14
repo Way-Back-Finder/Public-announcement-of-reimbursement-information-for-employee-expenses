@@ -69,7 +69,7 @@
             margin: 10px 0;
         }
         .hidden {
-            display: none;
+            display: none !important;  /* 加 !important 提高优先级 */
         }
         .tab {
             overflow: hidden;
@@ -369,21 +369,35 @@
 
             // 更新欢迎信息
             document.getElementById('welcome-name').textContent = currentProfile.name || '';
-    
-            // 更新个人信息显示区域（供后续查看）
+            
+            // 更新个人信息显示区域
             document.getElementById('display-name').textContent = currentProfile.name || '';
             document.getElementById('display-ID-number').textContent = currentProfile.id_number || '';
             document.getElementById('display-phone').textContent = currentProfile.cell_phone_number || '未填写';
             document.getElementById('display-bank-of-deposit').textContent = currentProfile.bank_of_deposit || '未填写';
             document.getElementById('display-bank-card-number').textContent = currentProfile.bank_card_number || '未填写';
-    
-            // 隐藏登录/注册标签，显示功能选择界面（而不是个人信息）
+            
+            // ==== 强制隐藏登录框的多种方式 ====
+            // 1. 隐藏整个 tab 容器
             document.querySelector('.tab').classList.add('hidden');
+            
+            // 2. 直接隐藏登录和注册的 div
             document.getElementById('Login').classList.add('hidden');
             document.getElementById('Register').classList.add('hidden');
-            document.getElementById('profile-section').classList.add('hidden');  // 个人信息先隐藏
+            
+            // 3. 强制设置内联样式（最保险）
+            document.querySelector('.tab').style.display = 'none';
+            document.getElementById('Login').style.display = 'none';
+            document.getElementById('Register').style.display = 'none';
+            
+            // 隐藏其他界面
+            document.getElementById('profile-section').classList.add('hidden');
             document.getElementById('wage-query-section').classList.add('hidden');
-            document.getElementById('function-select-section').classList.remove('hidden');  // 显示功能选择
+            document.getElementById('edit-section').classList.add('hidden');
+            
+            // 显示功能选择界面
+            document.getElementById('function-select-section').classList.remove('hidden');
+            document.getElementById('function-select-section').style.display = 'block'; // 确保显示
         }
 
         // 显示个人信息核对界面
@@ -395,16 +409,28 @@
 
         // 显示登录/注册标签
         function showLoginTabs() {
-            // 显示登录标签页
+            // 恢复显示登录框
             document.querySelector('.tab').classList.remove('hidden');
+            document.querySelector('.tab').style.display = 'block'; // 强制恢复
+            
             document.getElementById('Login').classList.remove('hidden');
+            document.getElementById('Login').style.display = 'block';
+            
             document.getElementById('Register').classList.add('hidden');
+            document.getElementById('Register').style.display = 'none';
             
             // 隐藏所有其他界面
             document.getElementById('profile-section').classList.add('hidden');
+            document.getElementById('profile-section').style.display = 'none';
+            
             document.getElementById('edit-section').classList.add('hidden');
+            document.getElementById('edit-section').style.display = 'none';
+            
             document.getElementById('function-select-section').classList.add('hidden');
+            document.getElementById('function-select-section').style.display = 'none';
+            
             document.getElementById('wage-query-section').classList.add('hidden');
+            document.getElementById('wage-query-section').style.display = 'none';
             
             // 默认显示登录表单
             window.openTab({ currentTarget: document.querySelector('.tablinks') }, 'Login');
