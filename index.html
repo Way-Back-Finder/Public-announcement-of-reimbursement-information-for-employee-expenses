@@ -277,16 +277,25 @@
 
         // 标签切换函数
         window.openTab = function(evt, tabName) {
+            console.log('切换标签到:', tabName);  // 添加日志
+            
             var i, tabcontent, tablinks;
             tabcontent = document.getElementsByClassName("tabcontent");
             for (i = 0; i < tabcontent.length; i++) {
                 tabcontent[i].style.display = "none";
+                console.log('隐藏:', tabcontent[i].id);  // 添加日志
             }
+            
             tablinks = document.getElementsByClassName("tablinks");
             for (i = 0; i < tablinks.length; i++) {
                 tablinks[i].className = tablinks[i].className.replace(" active", "");
             }
-            document.getElementById(tabName).style.display = "block";
+            
+            // 显示选中的标签
+            const selectedTab = document.getElementById(tabName);
+            selectedTab.style.display = "block";
+            console.log('显示:', tabName);  // 添加日志
+            
             evt.currentTarget.className += " active";
         }
 
