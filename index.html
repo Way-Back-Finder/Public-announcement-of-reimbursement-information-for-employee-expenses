@@ -318,7 +318,9 @@
             const name = document.getElementById('register-name').value;
             const email = document.getElementById('register-email').value;
             const password = document.getElementById('register-password').value;
-            
+            const errorDiv = document.getElementById('register-error');
+            const successDiv = document.getElementById('register-success');
+
             console.log('输入值:', { 
                 name: name, 
                 email: email, 
@@ -327,12 +329,6 @@
                 密码长度: password.length 
             });
             
-            const name = document.getElementById('register-name').value;
-            const email = document.getElementById('register-email').value;
-            const password = document.getElementById('register-password').value;
-            const errorDiv = document.getElementById('register-error');
-            const successDiv = document.getElementById('register-success');
-
             try {
                 const { data, error } = await supabaseClient.auth.signUp({
                     email: email,
