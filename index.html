@@ -345,12 +345,11 @@
             if (!currentProfile) return;
 
             document.getElementById('edit-name').value = currentProfile.name || '';
-            document.getElementById('edit-phone').value = currentProfile.phone || '';
-            document.getElementById('edit-department').value = currentProfile.department || '';
-            document.getElementById('edit-position').value = currentProfile.position || '';
-            document.getElementById('edit-hire-date').value = currentProfile.hire_date || '';
-            document.getElementById('edit-emergency').value = currentProfile.emergency_contact || '';
-
+            document.getElementById('edit-ID-number').value = currentProfile.id || '';
+            document.getElementById('edit-phone').value = currentProfile.cell_phone_number || '';
+            document.getElementById('edit-bank-of-deposit').value = currentProfile.bank_of_deposit || '';
+            document.getElementById('edit-bank-card-number').value = currentProfile.bank_card_number || '';
+            
             document.getElementById('profile-section').classList.add('hidden');
             document.getElementById('edit-section').classList.remove('hidden');
         }
@@ -370,11 +369,10 @@
             try {
                 const updates = {
                     name: document.getElementById('edit-name').value,
-                    phone: document.getElementById('edit-phone').value,
-                    department: document.getElementById('edit-department').value,
-                    position: document.getElementById('edit-position').value,
-                    hire_date: document.getElementById('edit-hire-date').value,
-                    emergency_contact: document.getElementById('edit-emergency').value
+                    id: document.getElementById('edit-ID-number').value,
+                    cell_phone_number: document.getElementById('edit-phone').value,
+                    bank_of_deposit: document.getElementById('edit-bank-of-deposit').value,
+                    bank_card_number: document.getElementById('edit-bank-card-number').value
                 };
 
                 const { error } = await supabaseClient
