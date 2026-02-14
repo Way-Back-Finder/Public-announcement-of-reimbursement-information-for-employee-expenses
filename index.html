@@ -547,6 +547,20 @@
             await supabaseClient.auth.signOut();
             showLoginTabs();
         }
+
+        // ===== 确保所有函数都挂载到全局 =====
+        window.openTab = openTab;
+        window.handleLogin = handleLogin;
+        window.handleRegister = handleRegister;
+        window.handleLogout = handleLogout;
+        window.enableEditMode = enableEditMode;
+        window.cancelEdit = cancelEdit;
+        window.saveProfile = saveProfile;
+        window.showPersonalInfo = showPersonalInfo;
+        window.showWageQuery = showWageQuery;
+        window.backToFunctionSelect = backToFunctionSelect;
+
+        console.log('所有函数已挂载，handleRegister:', typeof window.handleRegister);
     </script>
 </body>
 </html>
