@@ -305,7 +305,7 @@
 
             try {
                 const { data, error } = await supabaseClient
-                    .from('workers')
+                    .from('Employee_information')
                     .select('*')
                     .eq('id', currentUser.id)
                     .single();
