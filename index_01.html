@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>劳务小助手</title>
+    <title>工人信息管理系统</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         /* 样式保持不变 */
@@ -157,10 +157,8 @@
                 <p><strong>身份证号：</strong> <span id="display-ID-number"></span></p>
                 <p><strong>电话：</strong> <span id="display-phone"></span></p>
                 <p><strong>银行卡开户行：</strong> <span id="display-bank-of-deposit"></span></p>
-                <p><strong>银行卡卡号：</strong> <span id="display-bank-card-number"></span></p>
-            </div>
+                <p><strong>银行卡卡号：</strong> <span id="display-bank-card-number"></span></p>            </div>
             <button onclick="window.enableEditMode()">编辑信息</button>
-            <button onclick="window.backToFunctionSelect()">返回功能选择</button>  <!-- 新增返回按钮 -->
             <button class="logout" onclick="window.handleLogout()">退出登录</button>
         </div>
 
@@ -169,23 +167,23 @@
             <h2>编辑个人信息</h2>
             <div class="form-group">
                 <label for="edit-name">姓名</label>
-                <input type="text" id="edit-name" placeholder="请输入您的姓名">
+                <input type="text" id="edit-name" placeholder="请输入姓名">
             </div>
             <div class="form-group">
                 <label for="edit-ID-number">身份证号</label>
-                <input type="text" id="edit-ID-number" placeholder="请输入您的身份证号">
+                <input type="text" id="edit-ID-number" placeholder="请输入身份证号">
             </div>
             <div class="form-group">
                 <label for="edit-phone">电话</label>
-                <input type="tel" id="edit-phone" placeholder="请输入您的电话号码">
+                <input type="tel" id="edit-phone" placeholder="请输入电话号码">
             </div>
             <div class="form-group">
                 <label for="edit-bank-of-deposit">银行卡开户行</label>
-                <input type="text" id="edit-bank-of-deposit" placeholder="请输入您的银行卡开户行">
+                <input type="text" id="edit-bank-of-deposit" placeholder="请输入银行卡开户行">
             </div>
             <div class="form-group">
                 <label for="edit-bank-card-number">银行卡卡号</label>
-                <input type="text" id="edit-bank-card-number" placeholder="请输入您的银行卡号">
+                <input type="text" id="edit-bank-card-number" placeholder="请输入银行卡号">
             </div>
             <button onclick="window.saveProfile()">保存</button>
             <button onclick="window.cancelEdit()">取消</button>
@@ -316,34 +314,20 @@
         }
 
         // 显示个人信息
-        // 登录成功后，只加载数据，显示功能选择界面
         function displayProfile() {
             if (!currentProfile) return;
 
-            // 更新欢迎信息
-            document.getElementById('welcome-name').textContent = currentProfile.name || '';
-    
-            // 更新个人信息显示区域（供后续查看）
             document.getElementById('display-name').textContent = currentProfile.name || '';
             document.getElementById('display-ID-number').textContent = currentProfile.id_number || '';
             document.getElementById('display-phone').textContent = currentProfile.cell_phone_number || '未填写';
             document.getElementById('display-bank-of-deposit').textContent = currentProfile.bank_of_deposit || '未填写';
             document.getElementById('display-bank-card-number').textContent = currentProfile.bank_card_number || '未填写';
-    
-            // 隐藏登录/注册标签，显示功能选择界面（而不是个人信息）
+            
+            // 隐藏登录/注册标签，显示个人信息区
             document.querySelector('.tab').classList.add('hidden');
             document.getElementById('Login').classList.add('hidden');
             document.getElementById('Register').classList.add('hidden');
-            document.getElementById('profile-section').classList.add('hidden');  // 个人信息先隐藏
-            document.getElementById('wage-query-section').classList.add('hidden');
-            document.getElementById('function-select-section').classList.remove('hidden');  // 显示功能选择
-        }
-
-        // 显示个人信息核对界面
-        window.showPersonalInfo = function() {
-            document.getElementById('function-select-section').classList.add('hidden');
-            document.getElementById('wage-query-section').classList.add('hidden');
-            document.getElementById('profile-section').classList.remove('hidden');  // 显示个人信息
+            document.getElementById('profile-section').classList.remove('hidden');
         }
 
         // 显示登录/注册标签
@@ -373,9 +357,7 @@
         // 取消编辑
         window.cancelEdit = function() {
             document.getElementById('edit-section').classList.add('hidden');
-            // 修改这里：从个人信息界面返回时，回到功能选择界面
-            document.getElementById('profile-section').classList.add('hidden');
-            document.getElementById('function-select-section').classList.remove('hidden');
+            document.getElementById('profile-section').classList.remove('hidden');
         }
 
         // 保存个人信息
@@ -398,16 +380,14 @@
                     .update(updates)
                     .eq('id', currentUser.id);
 
-                // 保存成功后，回到功能选择界面
                 if (error) throw error;
 
                 // 重新加载个人信息
                 await loadUserProfile();
-
-                // 返回功能选择界面（而不是个人信息界面）
+                
+                // 返回显示模式
                 document.getElementById('edit-section').classList.add('hidden');
-                document.getElementById('profile-section').classList.add('hidden');
-                document.getElementById('function-select-section').classList.remove('hidden');
+                document.getElementById('profile-section').classList.remove('hidden');
             } catch (error) {
                 errorDiv.textContent = error.message;
             }
