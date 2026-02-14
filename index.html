@@ -299,7 +299,7 @@
 
             try {
                 const { data, error } = await supabaseClient
-                    .from('Employee_information')
+                    .from('"Employee_information"')
                     .select('*')
                     .eq('id', currentUser.id)
                     .single();
@@ -318,12 +318,11 @@
             if (!currentProfile) return;
 
             document.getElementById('display-name').textContent = currentProfile.name || '';
-            document.getElementById('display-phone').textContent = currentProfile.phone || '未填写';
-            document.getElementById('display-department').textContent = currentProfile.department || '未填写';
-            document.getElementById('display-position').textContent = currentProfile.position || '未填写';
-            document.getElementById('display-hire-date').textContent = currentProfile.hire_date || '未填写';
-            document.getElementById('display-emergency').textContent = currentProfile.emergency_contact || '未填写';
-
+            document.getElementById('display-ID-number').textContent = currentProfile.id || '';
+            document.getElementById('display-phone').textContent = currentProfile.cell_phone_number || '未填写';
+            document.getElementById('display-bank-of-deposit').textContent = currentProfile.bank_of_deposit || '未填写';
+            document.getElementById('display-bank-card-number').textContent = currentProfile.bank_card_number || '未填写';
+            
             // 隐藏登录/注册标签，显示个人信息区
             document.querySelector('.tab').classList.add('hidden');
             document.getElementById('Login').classList.add('hidden');
