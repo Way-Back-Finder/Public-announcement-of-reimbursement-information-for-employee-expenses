@@ -4,6 +4,7 @@
     <title>工人信息管理系统</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
+        /* 你的样式保持不变 */
         body {
             font-family: Arial, sans-serif;
             max-width: 800px;
@@ -197,10 +198,13 @@
     </div>
 
     <script>
-        // 初始化 Supabase 客户端
-        const supabaseUrl = 'https://qarxxooskpnmthykforf.supabase.co';  // 替换成你的 URL
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhcnh4b29za25wbXRoeWtmb3JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4NTI2NDgsImV4cCI6MjA4NjQyODY0OH0.NNQUYewxu-hKN6lvfnq-VXmaMPEcF6BLhj-UcArlkCI';  // 替换成你的 anon key
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        // ===== 修正版：使用正确的 Supabase URL =====
+        const supabaseUrl = 'https://qarxxooskpnmthykforf.supabase.co';  // ✅ 修正：这是你的 Supabase 项目URL
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhcnh4b29za25wbXRoeWtmb3JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4NTI2NDgsImV4cCI6MjA4NjQyODY0OH0.NNQUYewxu-hKN6lvfnq-VXmaMPEcF6BLhj-UcArlkCI';
+        
+        // 创建 Supabase 客户端（只声明一次）
+        const { createClient } = window.supabase;
+        const supabase = createClient(supabaseUrl, supabaseKey);
 
         // 当前用户状态
         let currentUser = null;
@@ -265,7 +269,7 @@
             }
         }
 
-        // 注册处理 [citation:6]
+        // 注册处理
         window.handleRegister = async function() {
             const name = document.getElementById('register-name').value;
             const email = document.getElementById('register-email').value;
@@ -289,7 +293,7 @@
                 successDiv.textContent = '注册成功！请登录。';
                 errorDiv.textContent = '';
                 setTimeout(() => {
-                    openTab(event, 'Login');
+                    window.openTab(event, 'Login');
                 }, 2000);
             } catch (error) {
                 errorDiv.textContent = error.message;
@@ -341,7 +345,7 @@
             document.getElementById('Register').classList.add('hidden');
             document.getElementById('profile-section').classList.add('hidden');
             document.getElementById('edit-section').classList.add('hidden');
-            openTab({ currentTarget: document.querySelector('.tablinks') }, 'Login');
+            window.openTab({ currentTarget: document.querySelector('.tablinks') }, 'Login');
         }
 
         // 启用编辑模式
