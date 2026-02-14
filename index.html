@@ -4,7 +4,7 @@
     <title>工人信息管理系统</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* 你的样式保持不变 */
+        /* 样式保持不变 */
         body {
             font-family: Arial, sans-serif;
             max-width: 800px;
@@ -110,8 +110,8 @@
         
         <!-- 登录/注册切换标签 -->
         <div class="tab">
-            <button class="tablinks active" onclick="openTab(event, 'Login')">登录</button>
-            <button class="tablinks" onclick="openTab(event, 'Register')">注册</button>
+            <button class="tablinks active" onclick="window.openTab(event, 'Login')">登录</button>
+            <button class="tablinks" onclick="window.openTab(event, 'Register')">注册</button>
         </div>
 
         <!-- 登录表单 -->
@@ -125,7 +125,7 @@
                 <label for="login-password">密码</label>
                 <input type="password" id="login-password" placeholder="请输入密码">
             </div>
-            <button onclick="handleLogin()">登录</button>
+            <button onclick="window.handleLogin()">登录</button>
             <div id="login-error" class="error"></div>
         </div>
 
@@ -144,7 +144,7 @@
                 <label for="register-password">密码</label>
                 <input type="password" id="register-password" placeholder="请输入密码">
             </div>
-            <button onclick="handleRegister()">注册</button>
+            <button onclick="window.handleRegister()">注册</button>
             <div id="register-error" class="error"></div>
             <div id="register-success" class="success"></div>
         </div>
@@ -160,8 +160,8 @@
                 <p><strong>入职日期：</strong> <span id="display-hire-date"></span></p>
                 <p><strong>紧急联系人：</strong> <span id="display-emergency"></span></p>
             </div>
-            <button onclick="enableEditMode()">编辑信息</button>
-            <button class="logout" onclick="handleLogout()">退出登录</button>
+            <button onclick="window.enableEditMode()">编辑信息</button>
+            <button class="logout" onclick="window.handleLogout()">退出登录</button>
         </div>
 
         <!-- 编辑信息表单（编辑模式） -->
@@ -191,27 +191,26 @@
                 <label for="edit-emergency">紧急联系人</label>
                 <input type="text" id="edit-emergency">
             </div>
-            <button onclick="saveProfile()">保存</button>
-            <button onclick="cancelEdit()">取消</button>
+            <button onclick="window.saveProfile()">保存</button>
+            <button onclick="window.cancelEdit()">取消</button>
             <div id="edit-error" class="error"></div>
         </div>
     </div>
 
     <script>
-        // ===== 修正版：使用正确的 Supabase URL =====
-        const supabaseUrl = 'https://qarxxooskpnmthykforf.supabase.co';  // ✅ 修正：这是你的 Supabase 项目URL
+        // ===== 使用 supabaseClient 避免命名冲突 =====
+        const supabaseUrl = 'https://qarxxooskpnmthykforf.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhcnh4b29za25wbXRoeWtmb3JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4NTI2NDgsImV4cCI6MjA4NjQyODY0OH0.NNQUYewxu-hKN6lvfnq-VXmaMPEcF6BLhj-UcArlkCI';
         
-        // 创建 Supabase 客户端（只声明一次）
-        const { createClient } = window.supabase;
-        const supabase = createClient(supabaseUrl, supabaseKey);
+        // 创建 Supabase 客户端
+        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
         // 当前用户状态
         let currentUser = null;
         let currentProfile = null;
 
         // 监听认证状态变化
-        supabase.auth.onAuthStateChange((event, session) => {
+        supabaseClient.auth.onAuthStateChange((event, session) => {
             if (session) {
                 currentUser = session.user;
                 loadUserProfile();
@@ -226,7 +225,7 @@
         checkUser();
 
         async function checkUser() {
-            const { data: { user } } = await supabase.auth.getUser();
+            const { data: { user } } = await supabaseClient.auth.getUser();
             if (user) {
                 currentUser = user;
                 loadUserProfile();
@@ -255,7 +254,7 @@
             const errorDiv = document.getElementById('login-error');
 
             try {
-                const { data, error } = await supabase.auth.signInWithPassword({
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
                     email: email,
                     password: password
                 });
@@ -278,7 +277,7 @@
             const successDiv = document.getElementById('register-success');
 
             try {
-                const { data, error } = await supabase.auth.signUp({
+                const { data, error } = await supabaseClient.auth.signUp({
                     email: email,
                     password: password,
                     options: {
@@ -305,7 +304,7 @@
             if (!currentUser) return;
 
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('workers')
                     .select('*')
                     .eq('id', currentUser.id)
@@ -385,7 +384,7 @@
                     emergency_contact: document.getElementById('edit-emergency').value
                 };
 
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('workers')
                     .update(updates)
                     .eq('id', currentUser.id);
@@ -405,7 +404,7 @@
 
         // 退出登录
         window.handleLogout = async function() {
-            await supabase.auth.signOut();
+            await supabaseClient.auth.signOut();
             showLoginTabs();
         }
     </script>
