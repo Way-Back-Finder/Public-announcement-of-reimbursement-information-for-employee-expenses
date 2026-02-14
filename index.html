@@ -395,11 +395,18 @@
 
         // 显示登录/注册标签
         function showLoginTabs() {
+            // 显示登录标签页
             document.querySelector('.tab').classList.remove('hidden');
             document.getElementById('Login').classList.remove('hidden');
             document.getElementById('Register').classList.add('hidden');
+            
+            // 隐藏所有其他界面
             document.getElementById('profile-section').classList.add('hidden');
             document.getElementById('edit-section').classList.add('hidden');
+            document.getElementById('function-select-section').classList.add('hidden');
+            document.getElementById('wage-query-section').classList.add('hidden');
+            
+            // 默认显示登录表单
             window.openTab({ currentTarget: document.querySelector('.tablinks') }, 'Login');
         }
 
