@@ -299,7 +299,7 @@
 
             try {
                 const { data, error } = await supabaseClient
-                    .from('"Employee_information"')
+                    .from('Employee_information')
                     .select('*')
                     .eq('id', currentUser.id)
                     .single();
@@ -318,7 +318,7 @@
             if (!currentProfile) return;
 
             document.getElementById('display-name').textContent = currentProfile.name || '';
-            document.getElementById('display-ID-number').textContent = currentProfile.id || '';
+            document.getElementById('display-ID-number').textContent = currentProfile.id_number || '';
             document.getElementById('display-phone').textContent = currentProfile.cell_phone_number || '未填写';
             document.getElementById('display-bank-of-deposit').textContent = currentProfile.bank_of_deposit || '未填写';
             document.getElementById('display-bank-card-number').textContent = currentProfile.bank_card_number || '未填写';
@@ -345,7 +345,7 @@
             if (!currentProfile) return;
 
             document.getElementById('edit-name').value = currentProfile.name || '';
-            document.getElementById('edit-ID-number').value = currentProfile.id || '';
+            document.getElementById('edit-ID-number').value = currentProfile.id_number || '';
             document.getElementById('edit-phone').value = currentProfile.cell_phone_number || '';
             document.getElementById('edit-bank-of-deposit').value = currentProfile.bank_of_deposit || '';
             document.getElementById('edit-bank-card-number').value = currentProfile.bank_card_number || '';
@@ -369,14 +369,14 @@
             try {
                 const updates = {
                     name: document.getElementById('edit-name').value,
-                    id: document.getElementById('edit-ID-number').value,
+                    id_number: document.getElementById('edit-ID-number').value,
                     cell_phone_number: document.getElementById('edit-phone').value,
                     bank_of_deposit: document.getElementById('edit-bank-of-deposit').value,
                     bank_card_number: document.getElementById('edit-bank-card-number').value
                 };
 
                 const { error } = await supabaseClient
-                    .from('"Employee_information"')
+                    .from('Employee_information')
                     .update(updates)
                     .eq('id', currentUser.id);
 
