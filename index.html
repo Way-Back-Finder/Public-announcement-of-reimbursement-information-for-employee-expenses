@@ -154,12 +154,10 @@
             <h2>我的信息</h2>
             <div id="info-display" class="info-display">
                 <p><strong>姓名：</strong> <span id="display-name"></span></p>
+                <p><strong>身份证号：</strong> <span id="display-ID-number"></span></p>
                 <p><strong>电话：</strong> <span id="display-phone"></span></p>
-                <p><strong>部门：</strong> <span id="display-department"></span></p>
-                <p><strong>职位：</strong> <span id="display-position"></span></p>
-                <p><strong>入职日期：</strong> <span id="display-hire-date"></span></p>
-                <p><strong>紧急联系人：</strong> <span id="display-emergency"></span></p>
-            </div>
+                <p><strong>银行卡开户行：</strong> <span id="display-bank-of-deposit"></span></p>
+                <p><strong>银行卡卡号：</strong> <span id="display-bank-card-number"></span></p>            </div>
             <button onclick="window.enableEditMode()">编辑信息</button>
             <button class="logout" onclick="window.handleLogout()">退出登录</button>
         </div>
@@ -172,24 +170,20 @@
                 <input type="text" id="edit-name">
             </div>
             <div class="form-group">
+                <label for="edit-ID-number">身份证号</label>
+                <input type="text" id="edit-ID-number">
+            </div>
+            <div class="form-group">
                 <label for="edit-phone">电话</label>
                 <input type="tel" id="edit-phone">
             </div>
             <div class="form-group">
-                <label for="edit-department">部门</label>
-                <input type="text" id="edit-department">
+                <label for="edit-bank-of-deposit">银行卡开户行</label>
+                <input type="text" id="edit-bank-of-deposit">
             </div>
             <div class="form-group">
-                <label for="edit-position">职位</label>
-                <input type="text" id="edit-position">
-            </div>
-            <div class="form-group">
-                <label for="edit-hire-date">入职日期</label>
-                <input type="date" id="edit-hire-date">
-            </div>
-            <div class="form-group">
-                <label for="edit-emergency">紧急联系人</label>
-                <input type="text" id="edit-emergency">
+                <label for="edit-hire-bank-card-number">银行卡卡号</label>
+                <input type="date" id="edit-bank-card-number">
             </div>
             <button onclick="window.saveProfile()">保存</button>
             <button onclick="window.cancelEdit()">取消</button>
