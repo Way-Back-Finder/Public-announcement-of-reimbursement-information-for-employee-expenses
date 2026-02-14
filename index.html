@@ -94,13 +94,33 @@
             background-color: #4CAF50;
             color: white;
         }
+        /* 确保 tabcontent 有正确的高度 */
         .tabcontent {
-            display: none;
+            display: none;  /* 默认隐藏，但切换时会显示 */
             padding: 20px;
             border: 1px solid #ccc;
             border-top: none;
             border-radius: 0 0 4px 4px;
             background-color: white;
+            height: auto;           /* 确保高度自动 */
+            min-height: 200px;      /* 给个最小高度 */
+            overflow: visible;      /* 确保内容可见 */
+        }
+
+        /* 当 tabcontent 显示时 */
+        .tabcontent[style*="display: block"] {
+            height: auto;
+            min-height: 200px;
+        }
+
+        /* 修改 hidden 类，不要完全依赖它 */
+        .hidden {
+            display: none !important;
+        }
+
+        /* 确保注册表单容器有高度 */
+        #Register {
+            min-height: 300px;
         }
     </style>
 </head>
