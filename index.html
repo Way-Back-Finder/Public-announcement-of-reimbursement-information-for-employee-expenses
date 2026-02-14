@@ -376,7 +376,7 @@
                 };
 
                 const { error } = await supabaseClient
-                    .from('workers')
+                    .from('"Employee_information"')
                     .update(updates)
                     .eq('id', currentUser.id);
 
