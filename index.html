@@ -1,10 +1,409 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>我的第一个网站</title>
+    <title>工人信息管理系统</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button.logout {
+            background-color: #f44336;
+        }
+        button.logout:hover {
+            background-color: #da190b;
+        }
+        .info-display {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        .info-display p {
+            margin: 10px 0;
+        }
+        .error {
+            color: red;
+            margin: 10px 0;
+        }
+        .success {
+            color: green;
+            margin: 10px 0;
+        }
+        .hidden {
+            display: none;
+        }
+        .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+            border-radius: 4px 4px 0 0;
+        }
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            color: black;
+        }
+        .tab button:hover {
+            background-color: #ddd;
+        }
+        .tab button.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .tabcontent {
+            display: none;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+            background-color: white;
+        }
+    </style>
 </head>
 <body>
-    <h1>Hello World!</h1>
-    <p>这是我的第一个网页。</p>
+    <div class="container">
+        <h1>工人信息管理系统</h1>
+        
+        <!-- 登录/注册切换标签 -->
+        <div class="tab">
+            <button class="tablinks active" onclick="openTab(event, 'Login')">登录</button>
+            <button class="tablinks" onclick="openTab(event, 'Register')">注册</button>
+        </div>
+
+        <!-- 登录表单 -->
+        <div id="Login" class="tabcontent" style="display: block;">
+            <h2>登录</h2>
+            <div class="form-group">
+                <label for="login-email">邮箱</label>
+                <input type="email" id="login-email" placeholder="请输入邮箱">
+            </div>
+            <div class="form-group">
+                <label for="login-password">密码</label>
+                <input type="password" id="login-password" placeholder="请输入密码">
+            </div>
+            <button onclick="handleLogin()">登录</button>
+            <div id="login-error" class="error"></div>
+        </div>
+
+        <!-- 注册表单 -->
+        <div id="Register" class="tabcontent">
+            <h2>注册</h2>
+            <div class="form-group">
+                <label for="register-name">姓名</label>
+                <input type="text" id="register-name" placeholder="请输入姓名">
+            </div>
+            <div class="form-group">
+                <label for="register-email">邮箱</label>
+                <input type="email" id="register-email" placeholder="请输入邮箱">
+            </div>
+            <div class="form-group">
+                <label for="register-password">密码</label>
+                <input type="password" id="register-password" placeholder="请输入密码">
+            </div>
+            <button onclick="handleRegister()">注册</button>
+            <div id="register-error" class="error"></div>
+            <div id="register-success" class="success"></div>
+        </div>
+
+        <!-- 个人信息显示/编辑区（登录后显示） -->
+        <div id="profile-section" class="hidden">
+            <h2>我的信息</h2>
+            <div id="info-display" class="info-display">
+                <p><strong>姓名：</strong> <span id="display-name"></span></p>
+                <p><strong>电话：</strong> <span id="display-phone"></span></p>
+                <p><strong>部门：</strong> <span id="display-department"></span></p>
+                <p><strong>职位：</strong> <span id="display-position"></span></p>
+                <p><strong>入职日期：</strong> <span id="display-hire-date"></span></p>
+                <p><strong>紧急联系人：</strong> <span id="display-emergency"></span></p>
+            </div>
+            <button onclick="enableEditMode()">编辑信息</button>
+            <button class="logout" onclick="handleLogout()">退出登录</button>
+        </div>
+
+        <!-- 编辑信息表单（编辑模式） -->
+        <div id="edit-section" class="hidden">
+            <h2>编辑个人信息</h2>
+            <div class="form-group">
+                <label for="edit-name">姓名</label>
+                <input type="text" id="edit-name">
+            </div>
+            <div class="form-group">
+                <label for="edit-phone">电话</label>
+                <input type="tel" id="edit-phone">
+            </div>
+            <div class="form-group">
+                <label for="edit-department">部门</label>
+                <input type="text" id="edit-department">
+            </div>
+            <div class="form-group">
+                <label for="edit-position">职位</label>
+                <input type="text" id="edit-position">
+            </div>
+            <div class="form-group">
+                <label for="edit-hire-date">入职日期</label>
+                <input type="date" id="edit-hire-date">
+            </div>
+            <div class="form-group">
+                <label for="edit-emergency">紧急联系人</label>
+                <input type="text" id="edit-emergency">
+            </div>
+            <button onclick="saveProfile()">保存</button>
+            <button onclick="cancelEdit()">取消</button>
+            <div id="edit-error" class="error"></div>
+        </div>
+    </div>
+
+    <script>
+        // 初始化 Supabase 客户端
+        const supabaseUrl = 'https://public-announcement-of-reimbursemen.vercel.app/';  // 替换成你的 URL
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhcnh4b29za25wbXRoeWtmb3JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4NTI2NDgsImV4cCI6MjA4NjQyODY0OH0.NNQUYewxu-hKN6lvfnq-VXmaMPEcF6BLhj-UcArlkCI';  // 替换成你的 anon key
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // 当前用户状态
+        let currentUser = null;
+        let currentProfile = null;
+
+        // 监听认证状态变化
+        supabase.auth.onAuthStateChange((event, session) => {
+            if (session) {
+                currentUser = session.user;
+                loadUserProfile();
+            } else {
+                currentUser = null;
+                currentProfile = null;
+                showLoginTabs();
+            }
+        });
+
+        // 检查当前登录状态
+        checkUser();
+
+        async function checkUser() {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                currentUser = user;
+                loadUserProfile();
+            }
+        }
+
+        // 标签切换函数
+        window.openTab = function(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        // 登录处理
+        window.handleLogin = async function() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const errorDiv = document.getElementById('login-error');
+
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+                if (error) throw error;
+
+                currentUser = data.user;
+                loadUserProfile();
+            } catch (error) {
+                errorDiv.textContent = error.message;
+            }
+        }
+
+        // 注册处理 [citation:6]
+        window.handleRegister = async function() {
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const errorDiv = document.getElementById('register-error');
+            const successDiv = document.getElementById('register-success');
+
+            try {
+                const { data, error } = await supabase.auth.signUp({
+                    email: email,
+                    password: password,
+                    options: {
+                        data: {
+                            name: name
+                        }
+                    }
+                });
+
+                if (error) throw error;
+
+                successDiv.textContent = '注册成功！请登录。';
+                errorDiv.textContent = '';
+                setTimeout(() => {
+                    openTab(event, 'Login');
+                }, 2000);
+            } catch (error) {
+                errorDiv.textContent = error.message;
+            }
+        }
+
+        // 加载用户个人信息
+        async function loadUserProfile() {
+            if (!currentUser) return;
+
+            try {
+                const { data, error } = await supabase
+                    .from('workers')
+                    .select('*')
+                    .eq('id', currentUser.id)
+                    .single();
+
+                if (error) throw error;
+
+                currentProfile = data;
+                displayProfile();
+            } catch (error) {
+                console.error('加载个人信息失败:', error);
+            }
+        }
+
+        // 显示个人信息
+        function displayProfile() {
+            if (!currentProfile) return;
+
+            document.getElementById('display-name').textContent = currentProfile.name || '';
+            document.getElementById('display-phone').textContent = currentProfile.phone || '未填写';
+            document.getElementById('display-department').textContent = currentProfile.department || '未填写';
+            document.getElementById('display-position').textContent = currentProfile.position || '未填写';
+            document.getElementById('display-hire-date').textContent = currentProfile.hire_date || '未填写';
+            document.getElementById('display-emergency').textContent = currentProfile.emergency_contact || '未填写';
+
+            // 隐藏登录/注册标签，显示个人信息区
+            document.querySelector('.tab').classList.add('hidden');
+            document.getElementById('Login').classList.add('hidden');
+            document.getElementById('Register').classList.add('hidden');
+            document.getElementById('profile-section').classList.remove('hidden');
+        }
+
+        // 显示登录/注册标签
+        function showLoginTabs() {
+            document.querySelector('.tab').classList.remove('hidden');
+            document.getElementById('Login').classList.remove('hidden');
+            document.getElementById('Register').classList.add('hidden');
+            document.getElementById('profile-section').classList.add('hidden');
+            document.getElementById('edit-section').classList.add('hidden');
+            openTab({ currentTarget: document.querySelector('.tablinks') }, 'Login');
+        }
+
+        // 启用编辑模式
+        window.enableEditMode = function() {
+            if (!currentProfile) return;
+
+            document.getElementById('edit-name').value = currentProfile.name || '';
+            document.getElementById('edit-phone').value = currentProfile.phone || '';
+            document.getElementById('edit-department').value = currentProfile.department || '';
+            document.getElementById('edit-position').value = currentProfile.position || '';
+            document.getElementById('edit-hire-date').value = currentProfile.hire_date || '';
+            document.getElementById('edit-emergency').value = currentProfile.emergency_contact || '';
+
+            document.getElementById('profile-section').classList.add('hidden');
+            document.getElementById('edit-section').classList.remove('hidden');
+        }
+
+        // 取消编辑
+        window.cancelEdit = function() {
+            document.getElementById('edit-section').classList.add('hidden');
+            document.getElementById('profile-section').classList.remove('hidden');
+        }
+
+        // 保存个人信息
+        window.saveProfile = async function() {
+            if (!currentUser) return;
+
+            const errorDiv = document.getElementById('edit-error');
+            
+            try {
+                const updates = {
+                    name: document.getElementById('edit-name').value,
+                    phone: document.getElementById('edit-phone').value,
+                    department: document.getElementById('edit-department').value,
+                    position: document.getElementById('edit-position').value,
+                    hire_date: document.getElementById('edit-hire-date').value,
+                    emergency_contact: document.getElementById('edit-emergency').value
+                };
+
+                const { error } = await supabase
+                    .from('workers')
+                    .update(updates)
+                    .eq('id', currentUser.id);
+
+                if (error) throw error;
+
+                // 重新加载个人信息
+                await loadUserProfile();
+                
+                // 返回显示模式
+                document.getElementById('edit-section').classList.add('hidden');
+                document.getElementById('profile-section').classList.remove('hidden');
+            } catch (error) {
+                errorDiv.textContent = error.message;
+            }
+        }
+
+        // 退出登录
+        window.handleLogout = async function() {
+            await supabase.auth.signOut();
+            showLoginTabs();
+        }
+    </script>
 </body>
 </html>
