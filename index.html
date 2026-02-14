@@ -314,7 +314,10 @@
             // 显示选中的标签
             const selectedTab = document.getElementById(tabName);
             selectedTab.style.display = "block";
-            console.log('显示:', tabName);  // 添加日志
+            selectedTab.style.height = "auto";
+            selectedTab.style.minHeight = "300px";
+            selectedTab.classList.remove('hidden');  // 确保移除 hidden 类
+            console.log('显示:', tabName);
             
             evt.currentTarget.className += " active";
         }
