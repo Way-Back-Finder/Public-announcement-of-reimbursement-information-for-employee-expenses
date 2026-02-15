@@ -536,21 +536,38 @@
 
         // 加载用户雇工费用
         async function loadUserRecords() {
-            if (!currentUser) return;
-
+            // 验证用户登录
+            if (!currentUser?.id) {
+                console.log('用户未登录');
+                return;
+            }
+            
+            // 显示加载状态
+            showLoading();
+            
             try {
                 const { data, error } = await supabaseClient
-                    .from('Payroll_records')
+                    .from('payroll_records')  // 用小写复数
                     .select('*')
-                    .eq('id', currentUser.id)
-                    .single();
-
+                    .eq('user_id', currentUser.id)  // 用 user_id 而不是 id
+                    .order('created_at', { ascending: false });  // 按时间倒序
+                
                 if (error) throw error;
-
-                currentRecords = data;
-                showWageQuery();
+                
+                // 保存数据（可能是空数组）
+                currentRecords = data || [];
+                
+                if (currentRecords.length > 0) {
+                    showWageQuery();
+                } else {
+                    showEmptyState();  // 显示"暂无记录"的提示
+                }
+                
             } catch (error) {
                 console.error('加载雇工费用失败:', error);
+                showErrorMessage('加载失败，请检查网络');
+            } finally {
+                hideLoading();  // 无论如何都隐藏加载状态
             }
         }
 
