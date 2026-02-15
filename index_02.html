@@ -534,26 +534,6 @@
             }
         }
 
-        // 加载用户雇工费用
-        async function loadUserProfile() {
-            if (!currentUser) return;
-
-            try {
-                const { data, error } = await supabaseClient
-                    .from('Payroll_records')
-                    .select('*')
-                    .eq('id', currentUser.id)
-                    .single();
-
-                if (error) throw error;
-
-                currentRecords = data;
-                showWageQuery();
-            } catch (error) {
-                console.error('加载雇工费用失败:', error);
-            }
-        }
-
         // 显示雇工费用查询界面
         window.showWageQuery = function() {
             document.getElementById('function-select-section').classList.add('hidden');
@@ -570,6 +550,38 @@
             document.getElementById('wage-query-section').classList.add('hidden');
             document.getElementById('edit-section').classList.add('hidden');
             document.getElementById('function-select-section').classList.remove('hidden');
+        }
+
+        // 加载工钱数据（示例函数）
+        async function loadWageData() {
+            if (!currentUser) return;
+            
+            try {
+                // 假设有一个 wages 表存储工钱记录
+                const { data, error } = await supabaseClient
+                    .from('wages')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('date', { ascending: false });
+                    
+                if (error) throw error;
+                
+                const tbody = document.getElementById('wage-records');
+                if (data && data.length > 0) {
+                    tbody.innerHTML = data.map(record => `
+                        <tr>
+                            <td style="padding: 8px; border: 1px solid #ddd;">${record.date}</td>
+                            <td style="padding: 8px; border: 1px solid #ddd;">${record.project}</td>
+                            <td style="padding: 8px; border: 1px solid #ddd;">${record.hours}</td>
+                            <td style="padding: 8px; border: 1px solid #ddd;">${record.amount}</td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td style="padding: 8px; border: 1px solid #ddd;" colspan="4">暂无工钱记录</td></tr>';
+                }
+            } catch (error) {
+                console.error('加载工钱数据失败:', error);
+            }
         }
 
         // 退出登录
